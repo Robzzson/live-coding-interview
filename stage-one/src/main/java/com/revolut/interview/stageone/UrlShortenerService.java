@@ -27,7 +27,7 @@ public class UrlShortenerService {
     return mapper.map(encodedBigInteger);
   }
 
-  public String retrieve(String s) {
+  public String retrieveUrl(String s) {
     String symbol = StringUtils.substring(s, s.lastIndexOf("/") + 1, s.length());
     BigInteger decoded = service.decode(symbol);
     return repository.getById(decoded);

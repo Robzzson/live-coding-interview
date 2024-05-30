@@ -50,7 +50,8 @@ class EncoderServiceTest {
         Arguments.of("26", "A"),
         Arguments.of("27", "B"),
         Arguments.of("61", "9"),
-        Arguments.of("886580160", "8aaaa")
+        Arguments.of("886580160", "8aaaa"),
+        Arguments.of("886580160", "aa8aaaa")
     );
   }
 }

@@ -12,34 +12,39 @@ public class EncoderService {
 
   static final int BASE = 62;
   static final String LOWERCASE_ALPHABET = "abcdefghijklmnopqrstuvwxyz";
-  static final String UPPERCASE_ALPHABET = StringUtils.upperCase("abcdefghijklmnopqrstuvwxyz");
+  static final String UPPERCASE_ALPHABET = StringUtils.upperCase(LOWERCASE_ALPHABET);
   static final String DIGITS = "0123456789";
   static final String SYMBOLS = LOWERCASE_ALPHABET + UPPERCASE_ALPHABET + DIGITS;
 
   public String encode(BigInteger integer) {
     AtomicReference<BigInteger> atomicReference = new AtomicReference<>(integer);
-    ArrayList<String> bits = new ArrayList<>();
+    ArrayList<Integer> indexes = new ArrayList<>();
     while (atomicReference.get().signum() > 0) {
       BigInteger bigInteger = atomicReference.getAndUpdate(i -> i.divide(BigInteger.valueOf(BASE)));
-      BigInteger remainder = bigInteger.remainder(BigInteger.valueOf(BASE));
-      bits.add(mapToChar(remainder));
+      Integer remainder = bigInteger.mod(BigInteger.valueOf(BASE)).intValueExact();
+      indexes.add(remainder);
     }
-    return bits.stream().reduce((p, n) -> n + p).orElse(String.valueOf(SYMBOLS.charAt(0)));
+    return indexes.stream()
+        .map(EncoderService::mapToChar)
+        .map(Object::toString)
+        .reduce((p, n) -> n + p)
+        .orElse(String.valueOf(SYMBOLS.charAt(0)));
   }
 
-  private String mapToChar(BigInteger remainder) {
-    return String.valueOf(SYMBOLS.charAt(remainder.intValue()));
+  public BigInteger decode(String input) {
+    return Stream.ofAll(input.toCharArray())
+        .reverse()
+        .map(EncoderService::mapToInt)
+        .zipWithIndex()
+        .map(tuple -> BigInteger.valueOf(tuple._1()).multiply(BigInteger.valueOf(BASE).pow(tuple._2())))
+        .reduce(BigInteger::add);
+  }
+
+  static Character mapToChar(Integer remainder) {
+    return SYMBOLS.charAt(remainder);
   }
 
   static Integer mapToInt(Character character) {
     return SYMBOLS.indexOf(character);
-  }
-
-  public BigInteger decode(String input) {
-    return Stream.ofAll(StringUtils.reverse(input).toCharArray())
-        .zipWithIndex()
-        .map(tuple -> mapToInt(tuple._1()) * Math.pow(BASE, tuple._2()))
-        .map(i -> BigInteger.valueOf(i.longValue()))
-        .reduce(BigInteger::add);
   }
 }
