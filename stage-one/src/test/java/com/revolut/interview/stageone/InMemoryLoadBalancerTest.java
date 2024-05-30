@@ -1,8 +1,10 @@
 package com.revolut.interview.stageone;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import org.assertj.vavr.api.VavrAssertions;
@@ -57,6 +59,13 @@ class InMemoryLoadBalancerTest {
 
   @Test
   void getInstance() {
+    String address = "172.31.141.232";
+    MachineInstanceDto dto = lb.registerInstance(address).get();
+
+    when(selectionStrategy.select(anyList())).thenReturn(Optional.of(dto));
+
+    VavrAssertions.assertThat(lb.getInstance())
+        .contains(dto);
   }
 
   @Test

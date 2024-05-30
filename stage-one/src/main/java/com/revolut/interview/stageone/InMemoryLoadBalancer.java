@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.apache.commons.lang3.NotImplementedException;
 
 public class InMemoryLoadBalancer implements LoadBalancer {
 
@@ -36,7 +35,8 @@ public class InMemoryLoadBalancer implements LoadBalancer {
 
   @Override
   public Option<MachineInstanceDto> getInstance() {
-    throw new NotImplementedException();
+    Optional<MachineInstanceDto> dto = strategy.select(new ArrayList<>(queue));
+    return Option.ofOptional(dto);
   }
 
   @Override
