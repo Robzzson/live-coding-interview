@@ -8,13 +8,14 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class InMemoryLoadBalancer implements LoadBalancer {
 
   private final LoadBalancerProperties properties;
   private final ConcurrentLinkedQueue<MachineInstanceDto> queue;
   private final SelectionStrategy strategy;
-
+  private final ReentrantLock lock = new ReentrantLock();
 
   public InMemoryLoadBalancer(LoadBalancerProperties properties, SelectionStrategy selectionStrategy) {
     this.properties = properties;
@@ -24,12 +25,18 @@ public class InMemoryLoadBalancer implements LoadBalancer {
 
   @Override
   public Either<LoadBalancerException, MachineInstanceDto> registerInstance(String address) {
-    if (queue.size() >= properties.getCapacity()) {
-      return Either.left(new LoadBalancerException("capacity limit reached"));
+    MachineInstanceDto dto;
+    lock.lock();
+    try {
+      if (queue.size() >= properties.getCapacity()) {
+        return Either.left(new LoadBalancerException("capacity limit reached"));
+      }
+      UUID uuid = UUID.randomUUID();
+      dto = new MachineInstanceDto(uuid, address);
+      queue.add(dto);
+    } finally {
+      lock.unlock();
     }
-    UUID uuid = UUID.randomUUID();
-    MachineInstanceDto dto = new MachineInstanceDto(uuid, address);
-    queue.add(dto);
     return Either.right(dto);
   }
 
