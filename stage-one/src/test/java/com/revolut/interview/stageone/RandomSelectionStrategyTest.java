@@ -57,7 +57,7 @@ class RandomSelectionStrategyTest {
     assertThat(results)
         .hasSize(100)
         .extracting(MachineInstanceDto::getId)
-        .haveAtLeastOne(new Condition<>(id -> id.equals(id1), "first lb instance"))
-        .haveAtLeastOne(new Condition<>(id -> id.equals(id2), "second lb instance"));
+        .haveAtLeastOne(new Condition<>(id -> id.equals(id1), "first machine instance"))
+        .haveAtLeastOne(new Condition<>(id -> id.equals(id2), "second machine instance"));
   }
 }
