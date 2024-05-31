@@ -24,7 +24,7 @@ class InMemoryLoadBalancerTest {
   LoadBalancerProperties properties;
 
   @Mock
-  LoadBalancerSelectionStrategy selectionStrategy;
+  SelectionStrategy selectionStrategy;
 
   final Provider<String> randomStringProvider = () -> RandomStringUtils.randomAlphabetic(10);
 

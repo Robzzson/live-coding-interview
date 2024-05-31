@@ -9,10 +9,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class InMemoryLoadBalancer implements LoadBalancer {
 
   private final LoadBalancerProperties properties;
-  private final LoadBalancerSelectionStrategy selectionStrategy;
+  private final SelectionStrategy selectionStrategy;
   ConcurrentLinkedQueue<MachineInstance> queue;
 
-  public InMemoryLoadBalancer(LoadBalancerProperties properties, LoadBalancerSelectionStrategy selectionStrategy) {
+  public InMemoryLoadBalancer(LoadBalancerProperties properties, SelectionStrategy selectionStrategy) {
     this.properties = properties;
     this.selectionStrategy = selectionStrategy;
     this.queue = new ConcurrentLinkedQueue<>(); // bad practice
