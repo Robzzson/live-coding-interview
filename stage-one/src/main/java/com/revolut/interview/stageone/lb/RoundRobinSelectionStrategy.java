@@ -3,7 +3,6 @@ package com.revolut.interview.stageone.lb;
 import io.vavr.control.Option;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.commons.lang3.NotImplementedException;
 
 public class RoundRobinSelectionStrategy implements SelectionStrategy {
 
