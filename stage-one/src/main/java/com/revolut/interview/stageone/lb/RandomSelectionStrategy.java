@@ -1,6 +1,7 @@
 package com.revolut.interview.stageone.lb;
 
 import com.google.inject.Provider;
+import io.vavr.collection.Stream;
 import io.vavr.control.Option;
 import java.util.List;
 import java.util.Random;

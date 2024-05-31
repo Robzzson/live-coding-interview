@@ -10,12 +10,11 @@ public class InMemoryLoadBalancer implements LoadBalancer {
 
   private final LoadBalancerProperties properties;
   private final SelectionStrategy selectionStrategy;
-  ConcurrentLinkedQueue<MachineInstance> queue;
+  final ConcurrentLinkedQueue<MachineInstance> queue = new ConcurrentLinkedQueue<>();
 
   public InMemoryLoadBalancer(LoadBalancerProperties properties, SelectionStrategy selectionStrategy) {
     this.properties = properties;
     this.selectionStrategy = selectionStrategy;
-    this.queue = new ConcurrentLinkedQueue<>(); // bad practice
   }
 
   @Override
