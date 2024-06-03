@@ -17,10 +17,10 @@ public class Base62UrlEncoder implements UrlEncoder {
   @Override
   public String encode(BigInteger bigInteger) {
     AtomicReference<BigInteger> atomicReference = new AtomicReference<>(bigInteger);
-    ArrayList<Integer> indexes = new ArrayList<>();
+    ArrayList<BigInteger> indexes = new ArrayList<>();
     while (atomicReference.get().signum() > 0) {
       BigInteger integer = atomicReference.getAndUpdate(bi -> bi.divide(BASE));
-      int remainder = integer.mod(BASE).intValueExact();
+      BigInteger remainder = integer.mod(BASE);
       indexes.add(remainder);
     }
     return indexes.stream()
@@ -34,18 +34,17 @@ public class Base62UrlEncoder implements UrlEncoder {
   public BigInteger decode(String identifier) {
     return Stream.ofAll(identifier.toCharArray())
         .map(Base62UrlEncoder::mapToInt)
-        .map(BigInteger::valueOf)
         .reverse()
         .zipWithIndex()
         .map(tuple -> tuple._1().multiply(BASE.pow(tuple._2())))
         .reduce(BigInteger::add);
   }
 
-  private static Character mapToChar(Integer integer) {
-    return SYMBOLS.charAt(integer);
+  private static Character mapToChar(BigInteger integer) {
+    return SYMBOLS.charAt(integer.intValueExact());
   }
 
-  private static Integer mapToInt(Character character) {
-    return SYMBOLS.indexOf(character);
+  private static BigInteger mapToInt(Character character) {
+    return BigInteger.valueOf(SYMBOLS.indexOf(character));
   }
 }
