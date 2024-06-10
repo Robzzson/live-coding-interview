@@ -24,4 +24,8 @@ public class AccountDao {
     this.map.put(accountEntity.getUuid(), accountEntity);
     return accountEntity;
   }
+
+  public void create(AccountEntity accountEntity) {
+    this.map.putIfAbsent(accountEntity.getUuid(), accountEntity);
+  }
 }

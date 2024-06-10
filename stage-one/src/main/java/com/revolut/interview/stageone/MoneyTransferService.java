@@ -20,6 +20,12 @@ public class MoneyTransferService {
 
   @Transactional(Transactional.TxType.REQUIRED)
   public TransferEntity transfer(AccountEntity from, AccountEntity to, BigDecimal amount) {
+    if (from.equals(to)) {
+      throw new TransferException("Cannot transfer to self");
+    }
+    if (amount.signum() != 1) {
+      throw new TransferException("invalid value");
+    }
 
     Optional<AccountEntity> fromAccountOptional = accountDao.fetchWithLock(from.getUuid());
     Optional<AccountEntity> toAccountOptional = accountDao.fetchWithLock(to.getUuid());
@@ -34,7 +40,7 @@ public class MoneyTransferService {
 
     AccountEntity updated = accountDao.update(fromAccount);
     if (updated.getBalance().signum() == -1) {
-      throw new RuntimeException("Negative balance in account [%s]".formatted(fromAccount.getUuid()));
+      throw new TransferException("Insufficient funds in account [%s]".formatted(fromAccount.getUuid()));
     }
     accountDao.update(toAccount);
 
