@@ -21,7 +21,6 @@ public class BalanceTransferService {
     // amount > from.getBalance()
     // amount > 0
 
-
     Optional<AccountEntity> fromAccountOptional = accountDao.fetchWithLock(from.getId());
     Optional<AccountEntity> toAccountOptional = accountDao.fetchWithLock(to.getId());
 
@@ -32,6 +31,14 @@ public class BalanceTransferService {
 //      Comparator.comparing()
     Integer version = fromAccount.getVersion();
     AtomicInteger atomicInteger = new AtomicInteger(version);
+
+    if (fromAccount.compareTo(toAccount) > 0) {
+//      synchronized (fromAccount) {
+//        synchronized (toAccount) {
+    } else {
+//      synchronized (toAccount) {
+//        synchronized (fromAccount) {
+    }
 
     synchronized (fromAccount) {
       synchronized (toAccount) {
